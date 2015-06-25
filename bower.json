@@ -1,0 +1,28 @@
+{
+  "name": "Unity-PathCreation",
+  "version": "0.1.0",
+  "homepage": "https://github.com/shinobushiva/Unity-PathCreation",
+  "authors": [
+    "Shinobu Izumi <stagesp1@gmail.com>"
+  ],
+  "description": "Path Creation Tool for Unity",
+  "keywords": [
+    "data",
+    "save",
+    "load",
+    "unity",
+    "unity3d"
+  ],
+   "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "main":{},
+  "license": "MIT",
+  "dependencies": {
+    "DataSaveLoad": "shinobushiva/Unity-DataSaveLoad"
+  }
+}
