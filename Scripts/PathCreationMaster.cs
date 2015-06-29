@@ -7,6 +7,7 @@ namespace PathCreation
 {
 	public class PathCreationMaster : MonoBehaviour
 	{
+		public string folder = "PathCreation";
 
 		public Transform target;
 		public Camera moveAlongCamera;
@@ -43,12 +44,12 @@ namespace PathCreation
 		public void ShowSaveUI ()
 		{
 			
-			dataSaveLoad.ShowSaveDialog (currentPathCreating);
+			dataSaveLoad.ShowSaveDialog (currentPathCreating, folder);
 		}
 		
 		public void ShowLoadUI ()
 		{
-			dataSaveLoad.ShowLoadDialog (typeof(List<Point>));
+			dataSaveLoad.ShowLoadDialog (typeof(List<Point>), folder);
 		}
 		
 		// Update is called once per frame
