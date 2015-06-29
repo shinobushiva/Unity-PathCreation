@@ -27,7 +27,7 @@ namespace PathCreation
 		// Use this for initialization
 		void Start ()
 		{
-			dataSaveLoad.loadDataUI.dataLoadHandler += DataLoadCallback;
+			dataSaveLoad.dataLoadHandler += DataLoadCallback;
 		}
 
 		public void DataLoadCallback (object o)
