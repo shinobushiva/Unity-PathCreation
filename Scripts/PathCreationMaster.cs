@@ -28,7 +28,7 @@ namespace PathCreation
 		// Use this for initialization
 		void Start ()
 		{
-			dataSaveLoad.dataLoadHandler += DataLoadCallback;
+			dataSaveLoad.AddHandler(DataLoadCallback, typeof(List<Point>));
 		}
 
 		public void DataLoadCallback (object o)
