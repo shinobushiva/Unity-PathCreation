@@ -2,16 +2,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using DataSaveLoad;
+using System.IO;
+using UnityEngine.UI;
 
 namespace PathCreation
 {
 	public class PathCreationMaster : MonoBehaviour
 	{
 		public string folder = "PathCreation";
+		private string latestAutoSavefile = "PathCreation_AutoSaved";
 
 		public Transform target;
 		public Camera moveAlongCamera;
 		private float moveAlongSpeed = 1;
+
+		public Toggle showToggle;
 
 		public float MoveAlongSpeed {
 			set {
@@ -29,6 +34,13 @@ namespace PathCreation
 		void Start ()
 		{
 			dataSaveLoad.AddHandler(DataLoadCallback, typeof(List<Point>));
+
+			FileInfo fi = new FileInfo (dataSaveLoad.GetFilePath (latestAutoSavefile, folder));
+			print (dataSaveLoad.GetFilePath (folder, latestAutoSavefile));
+			if (fi.Exists) {
+				showToggle.isOn = false;
+				dataSaveLoad.Load (fi, typeof(List<Point>));
+			}
 		}
 
 		public void DataLoadCallback (object o)
@@ -39,6 +51,7 @@ namespace PathCreation
 			foreach (Point p in list) {
 				AddPathPoint (p.position, p.rotation);
 			}
+			ShowPath (showToggle.isOn);
 		}
 
 		public void ShowSaveUI ()
@@ -71,11 +84,22 @@ namespace PathCreation
 		private List<Point> currentPathCreating;
 		private GameObject creatingPathObj;
 
+		public void ShowPath(bool b){
+			if (creatingPathObj) {
+				Renderer[] rs = creatingPathObj.GetComponentsInChildren<Renderer>();
+				foreach(Renderer r in rs){
+					r.enabled = b;
+				}
+			}
+		}
+
 		public void StartPathCreation ()
 		{
 			if (creatingPathObj) {
 				Destroy (creatingPathObj);
 			}
+
+			showToggle.isOn = true;
 
 			currentPathCreating = new List<Point> ();
 			creatingPathObj = new GameObject ("Created Path");
@@ -214,6 +238,10 @@ namespace PathCreation
 
 			currentSelected = pn;
 			currentSelected.gameObject.GetComponent<Renderer> ().material.color = Color.yellow;
+		}
+
+		void OnDestroy(){
+			dataSaveLoad.Save (latestAutoSavefile, folder, currentPathCreating);
 		}
 	}
 }
