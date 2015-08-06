@@ -266,7 +266,7 @@ GameObject:
   - 224: {fileID: 22451524}
   - 114: {fileID: 11489552}
   m_Layer: 5
-  m_Name: Toggle
+  m_Name: Toggle_ShowPath
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -351,6 +351,25 @@ GameObject:
   - 114: {fileID: 11468456}
   m_Layer: 5
   m_Name: Text_DeleteNode
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!1 &171982
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 4
+  m_Component:
+  - 4: {fileID: 466448}
+  - 20: {fileID: 2044314}
+  - 124: {fileID: 12474010}
+  - 92: {fileID: 9210670}
+  - 81: {fileID: 8152048}
+  m_Layer: 0
+  m_Name: MoveAlongCamera
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -505,9 +524,69 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
+  - {fileID: 466448}
   - {fileID: 22470202}
   m_Father: {fileID: 0}
   m_RootOrder: 0
+--- !u!4 &466448
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 171982}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 433326}
+  m_RootOrder: 0
+--- !u!20 &2044314
+Camera:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 171982}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 1
+  m_BackGroundColor: {r: .192156866, g: .301960796, b: .474509805, a: .0196078438}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+  near clip plane: .300000012
+  far clip plane: 1000
+  field of view: 60
+  orthographic: 0
+  orthographic size: 5
+  m_Depth: 0
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 4294966751
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_HDR: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: .0219999999
+  m_StereoMirrorMode: 0
+--- !u!81 &8152048
+AudioListener:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 171982}
+  m_Enabled: 1
+--- !u!92 &9210670
+Behaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 171982}
+  m_Enabled: 1
 --- !u!114 &11401052
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -533,7 +612,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Add Point
+  m_Text: Add Node
 --- !u!114 &11401624
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1023,10 +1102,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5e9d3e9c6a3134dacb01597c8307e326, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  folder: LayerSettings
-  target: {fileID: 0}
-  moveAlongCamera: {fileID: 0}
+  folder: PathCreation
+  moveAlongCamera: {fileID: 2044314}
+  cameraSwitcher: {fileID: 0}
+  showToggle: {fileID: 11489552}
   dataSaveLoad: {fileID: 0}
+  moveCameraButton: {fileID: 0}
 --- !u!114 &11454658
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1066,7 +1147,7 @@ MonoBehaviour:
   m_FillRect: {fileID: 22465840}
   m_HandleRect: {fileID: 22433100}
   m_Direction: 0
-  m_MinValue: 1
+  m_MinValue: .100000001
   m_MaxValue: 5
   m_WholeNumbers: 0
   m_Value: 1
@@ -1272,7 +1353,7 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Toggle+ToggleEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
-  m_IsOn: 1
+  m_IsOn: 0
 --- !u!114 &11491320
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1498,7 +1579,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Move Along
+  m_Text: Path Preview
 --- !u!114 &11495794
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1593,6 +1674,13 @@ MonoBehaviour:
         m_CallState: 2
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
+--- !u!124 &12474010
+Behaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 171982}
+  m_Enabled: 1
 --- !u!222 &22203480
 CanvasRenderer:
   m_ObjectHideFlags: 1
@@ -1779,9 +1867,9 @@ RectTransform:
   - {fileID: 22485234}
   m_Father: {fileID: 22409106}
   m_RootOrder: 5
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -185}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 415}
   m_SizeDelta: {x: -10, y: 30}
   m_Pivot: {x: .5, y: 1}
 --- !u!224 &22409106
@@ -2104,7 +2192,7 @@ RectTransform:
   m_Children:
   - {fileID: 22409106}
   m_Father: {fileID: 433326}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
@@ -2157,9 +2245,9 @@ RectTransform:
   - {fileID: 22419692}
   m_Father: {fileID: 22409106}
   m_RootOrder: 2
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -155}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 0}
+  m_AnchoredPosition: {x: 0, y: 445}
   m_SizeDelta: {x: -10, y: 30}
   m_Pivot: {x: .5, y: 1}
 --- !u!224 &22485234

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using DataSaveLoad;
 using System.IO;
 using UnityEngine.UI;
+using Shiva.CameraSwitch;
 
 namespace PathCreation
 {
@@ -12,8 +13,10 @@ namespace PathCreation
 		public string folder = "PathCreation";
 		private string latestAutoSavefile = "PathCreation_AutoSaved";
 
-		public Transform target;
 		public Camera moveAlongCamera;
+
+		public CameraSwitcher cameraSwitcher;
+
 		private float moveAlongSpeed = 1;
 
 		public Toggle showToggle;
@@ -29,6 +32,8 @@ namespace PathCreation
 
 		public DataSaveLoadMaster dataSaveLoad;
 
+		public Button moveCameraButton;
+
 
 		// Use this for initialization
 		void Start ()
@@ -41,6 +46,9 @@ namespace PathCreation
 				showToggle.isOn = false;
 				dataSaveLoad.Load (fi, typeof(List<Point>));
 			}
+
+			moveAlongCamera.depth = 0;
+			moveAlongCamera.gameObject.SetActive (false);
 		}
 
 		public void DataLoadCallback (object o)
@@ -110,7 +118,8 @@ namespace PathCreation
 			if (currentPathCreating == null)
 				StartPathCreation ();
 
-			AddPathPoint (target.position, target.rotation);
+			Transform target = cameraSwitcher.CurrentActive.transform;
+			AddPathPoint (target.position+target.forward, target.rotation);
 		}
 
 		public PathNode CreateNode (Vector3 pos, Quaternion rot, Point p)
@@ -127,7 +136,8 @@ namespace PathCreation
 			PathNode pn = po.AddComponent<PathNode> ();
 			p.pn = pn;
 			pn.point = p;
-			po.AddComponent<DraggableObject> ();
+			DraggableObject drag = po.AddComponent<DraggableObject> ();
+			drag.master = this;
 			pn.master = this;
 
 			return pn;
@@ -174,13 +184,23 @@ namespace PathCreation
 			}
 		}
 
+		private bool movingAlong = false;
+
 		private IEnumerator _MoveAlong (Transform t)
 		{
-			if (currentPathCreating.Count < 2)
+
+			if (currentPathCreating == null || currentPathCreating.Count < 2)
 				yield break;
 
+			moveAlongCamera.gameObject.SetActive (true);
+			moveAlongCamera.depth = 100;
+
+			moveAlongCamera.transform.position = currentPathCreating [0].position;
+			moveAlongCamera.transform.rotation = 
+				Quaternion.LookRotation((currentPathCreating [1].position-currentPathCreating [0].position).normalized);
+
 			int idx = 0;
-			while (idx < currentPathCreating.Count-1) {
+			while (movingAlong && idx < currentPathCreating.Count-1) {
 				Point p1 = currentPathCreating [idx];
 				Point p2 = currentPathCreating [idx + 1];
 
@@ -190,11 +210,12 @@ namespace PathCreation
 
 				float time = Time.time;
 
-				while (time < eTime) {
+				while (movingAlong && time < eTime) {
 					float delta = Time.deltaTime * moveAlongSpeed;
 					float f = 1f - (eTime - time) / len;
 					t.position = Vector3.Lerp (p1.position, p2.position, f);
-					t.rotation = Quaternion.Lerp (t.rotation, p2.rotation, Time.deltaTime);
+					//t.rotation = Quaternion.Lerp (t.rotation, p2.rotation, Time.deltaTime);
+					t.rotation = Quaternion.Lerp (t.rotation,Quaternion.LookRotation((p2.position-p1.position).normalized), Time.deltaTime);
 
 					time += delta;
 
@@ -202,6 +223,9 @@ namespace PathCreation
 				}
 				idx++;
 			}
+
+			moveAlongCamera.depth = 0;
+			moveAlongCamera.gameObject.SetActive (false);
 		}
 
 		public void MoveAlong (Transform t)
@@ -211,7 +235,12 @@ namespace PathCreation
 
 		public void MoveAlong ()
 		{
-			MoveAlong (moveAlongCamera.transform);
+			if (movingAlong) {
+				movingAlong = false;
+			} else {
+				movingAlong = true;
+				MoveAlong (moveAlongCamera.transform);
+			}
 		}
 
 		public void EndPathCreation ()
