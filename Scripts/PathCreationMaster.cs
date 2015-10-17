@@ -270,7 +270,8 @@ namespace PathCreation
 		}
 
 		void OnDestroy(){
-			dataSaveLoad.Save (latestAutoSavefile, folder, currentPathCreating);
+			if(currentPathCreating != null)
+				dataSaveLoad.Save (latestAutoSavefile, folder, currentPathCreating);
 		}
 	}
 }
