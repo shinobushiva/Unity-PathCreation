@@ -49,11 +49,14 @@ namespace PathCreation
 
 			moveAlongCamera.depth = 0;
 			moveAlongCamera.gameObject.SetActive (false);
+			ShowPath (false);
 		}
 
 		public void DataLoadCallback (object o)
 		{
+			bool ss = showToggle.isOn;
 			StartPathCreation ();
+			showToggle.isOn = ss;
 
 			List<Point> list = o as List<Point>;
 			foreach (Point p in list) {
@@ -269,7 +272,7 @@ namespace PathCreation
 			currentSelected.gameObject.GetComponent<Renderer> ().material.color = Color.yellow;
 		}
 
-		void OnDestroy(){
+		void OnDisable(){
 			if(currentPathCreating != null)
 				dataSaveLoad.Save (latestAutoSavefile, folder, currentPathCreating);
 		}
