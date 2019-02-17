@@ -13,8 +13,10 @@ namespace PathCreation
 		public string folder = "PathCreation";
 		private string latestAutoSavefile = "PathCreation_AutoSaved";
 
-		public Camera moveAlongCamera;
+        public SwitchableCamera moveAlongCamera;
+        private SwitchableCamera activeCamera;
 
+        [HideInInspector]
 		public CameraSwitcher cameraSwitcher;
 
 		private float moveAlongSpeed = 1;
@@ -47,8 +49,13 @@ namespace PathCreation
 				dataSaveLoad.Load (fi, typeof(List<Point>));
 			}
 
-			moveAlongCamera.depth = 0;
-			moveAlongCamera.gameObject.SetActive (false);
+            cameraSwitcher = FindObjectOfType<CameraSwitcher>();
+
+			moveAlongCamera.c.depth = 0;
+            //moveAlongCamera.gameObject.SetActive (false);
+            cameraSwitcher.AddCamera(moveAlongCamera);
+
+
 			ShowPath (false);
 		}
 
@@ -121,7 +128,7 @@ namespace PathCreation
 			if (currentPathCreating == null)
 				StartPathCreation ();
 
-			Transform target = cameraSwitcher.CurrentActive.transform;
+			Transform target = cameraSwitcher.CurrentActive.c.transform;
 			AddPathPoint (target.position+target.forward, target.rotation);
 		}
 
@@ -195,8 +202,8 @@ namespace PathCreation
 			if (currentPathCreating == null || currentPathCreating.Count < 2)
 				yield break;
 
-			moveAlongCamera.gameObject.SetActive (true);
-			moveAlongCamera.depth = 100;
+			//moveAlongCamera.gameObject.SetActive (true);
+			moveAlongCamera.c.depth = 100;
 
 			moveAlongCamera.transform.position = currentPathCreating [0].position;
 			moveAlongCamera.transform.rotation = 
@@ -227,9 +234,10 @@ namespace PathCreation
 				idx++;
 			}
 
-			moveAlongCamera.depth = 0;
-			moveAlongCamera.gameObject.SetActive (false);
-		}
+            moveAlongCamera.c.depth = 0;
+            //moveAlongCamera.gameObject.SetActive (false);
+            cameraSwitcher.Switch(activeCamera);
+        }
 
 		public void MoveAlong (Transform t)
 		{
@@ -240,8 +248,11 @@ namespace PathCreation
 		{
 			if (movingAlong) {
 				movingAlong = false;
-			} else {
-				movingAlong = true;
+                cameraSwitcher.Switch(activeCamera);
+            } else {
+                activeCamera = cameraSwitcher.CurrentActive;
+                cameraSwitcher.Switch(moveAlongCamera);
+                movingAlong = true;
 				MoveAlong (moveAlongCamera.transform);
 			}
 		}

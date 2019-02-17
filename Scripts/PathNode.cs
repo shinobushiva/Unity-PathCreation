@@ -48,7 +48,6 @@ namespace PathCreation{
 		}
 
 		public void Delete(){
-			print ("Delete");
 			if (connectedLinks.Count == 0) {
 				master.DeletePoint(this.point);
 				Destroy (gameObject);
